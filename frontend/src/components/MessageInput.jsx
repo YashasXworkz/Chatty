@@ -1,13 +1,58 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
-import { Image, Send, X } from "lucide-react";
+import { useEmotionStore } from "../store/useEmotionStore";
+import { Image, Send, X, Smile } from "lucide-react";
 import toast from "react-hot-toast";
+
+// Simple client-side emotion detection preview
+const getPreviewEmotion = (text) => {
+  if (!text) return null;
+  
+  // Happy keywords
+  if (/happy|glad|joy|yay|great|excellent/i.test(text)) return "happy";
+  
+  // Sad keywords
+  if (/sad|upset|unfortunate|sorry|miss you/i.test(text)) return "sad";
+  
+  // Angry keywords
+  if (/angry|mad|frustrated|annoyed/i.test(text)) return "angry";
+  
+  // Excited keywords
+  if (/excited|thrilled|awesome|amazing/i.test(text)) return "excited";
+  
+  // Surprised keywords
+  if (/surprised|wow|omg|unexpected|cannot believe/i.test(text)) return "surprised";
+  
+  return null;
+};
+
+// Emotion UI labels
+const emotionLabels = {
+  happy: { text: "Happy", color: "text-amber-500" },
+  sad: { text: "Sad", color: "text-blue-500" },
+  angry: { text: "Angry", color: "text-red-500" },
+  excited: { text: "Excited", color: "text-green-500" },
+  surprised: { text: "Surprised", color: "text-purple-500" },
+};
 
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [previewEmotion, setPreviewEmotion] = useState(null);
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
+  const { emotionDetectionEnabled } = useEmotionStore();
+
+  // Update preview emotion when text changes
+  useEffect(() => {
+    if (!emotionDetectionEnabled) {
+      setPreviewEmotion(null);
+      return;
+    }
+    
+    const emotion = getPreviewEmotion(text);
+    setPreviewEmotion(emotion);
+  }, [text, emotionDetectionEnabled]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -41,6 +86,7 @@ const MessageInput = () => {
       // Clear form
       setText("");
       setImagePreview(null);
+      setPreviewEmotion(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -70,7 +116,7 @@ const MessageInput = () => {
       )}
 
       <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-        <div className="flex-1 flex gap-2">
+        <div className="flex-1 flex gap-2 relative">
           <input
             type="text"
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
@@ -78,6 +124,14 @@ const MessageInput = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
+          {emotionDetectionEnabled && previewEmotion && (
+            <div className="absolute right-14 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+              <Smile className={`size-4 ${emotionLabels[previewEmotion].color}`} />
+              <span className={`text-xs ${emotionLabels[previewEmotion].color}`}>
+                {emotionLabels[previewEmotion].text}
+              </span>
+            </div>
+          )}
           <input
             type="file"
             accept="image/*"

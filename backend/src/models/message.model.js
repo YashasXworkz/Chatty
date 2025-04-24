@@ -18,6 +18,11 @@ const messageSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    emotion: {
+      type: String,
+      enum: ["neutral", "happy", "sad", "angry", "excited", "surprised"],
+      default: "neutral",
+    },
   },
   { timestamps: true }
 );

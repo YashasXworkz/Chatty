@@ -1,8 +1,30 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
-
+import Sentiment from "sentiment";
 import cloudinary from "../lib/cloudinary.js";
 import { getReceiverSocketId, io } from "../lib/socket.js";
+
+// Initialize sentiment analyzer
+const sentiment = new Sentiment();
+
+// Function to determine emotion based on sentiment analysis
+const detectEmotion = (text) => {
+  if (!text) return "neutral";
+
+  const analysis = sentiment.analyze(text);
+  const score = analysis.score;
+
+  // Simple emotion detection rules
+  if (score >= 3) return "excited";
+  if (score > 0) return "happy";
+  if (score < -2) return "angry";
+  if (score < 0) return "sad";
+
+  // Check for exclamation marks to detect excitement/surprise
+  if (text.includes("!") && (text.match(/!/g) || []).length >= 2) return "surprised";
+
+  return "neutral";
+};
 
 export const getUsersForSidebar = async (req, res) => {
   try {
@@ -48,11 +70,15 @@ export const sendMessage = async (req, res) => {
       imageUrl = uploadResponse.secure_url;
     }
 
+    // Detect emotion from message text
+    const emotion = detectEmotion(text);
+
     const newMessage = new Message({
       senderId,
       receiverId,
       text,
       image: imageUrl,
+      emotion,
     });
 
     await newMessage.save();

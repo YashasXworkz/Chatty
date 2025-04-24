@@ -19,6 +19,13 @@ const MessageSkeleton = () => {
           <div className="chat-bubble bg-transparent p-0">
             <div className="skeleton h-16 w-[200px]" />
           </div>
+          
+          {/* Emotion indicator skeleton */}
+          {idx % 3 === 0 && (
+            <div className="chat-footer mt-1">
+              <div className="skeleton h-3 w-10" />
+            </div>
+          )}
         </div>
       ))}
     </div>
