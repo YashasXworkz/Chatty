@@ -7,22 +7,22 @@ import toast from "react-hot-toast";
 // Simple client-side emotion detection preview
 const getPreviewEmotion = (text) => {
   if (!text) return null;
-  
+
   // Happy keywords
-  if (/happy|glad|joy|yay|great|excellent/i.test(text)) return "happy";
-  
+  if (/happy|glad|joy|yay|great|excellent|delighted|cheerful|pleased|wonderful|smile|love|enjoy|blessed|fantastic|good|lovely|positive|content|ecstatic|elated|jubilant|thrilled|blissful|radiant|joyful|merry|optimistic|pleased|satisfied|cheerful|gratified|beaming|glowing|jolly|fortunate|grateful|amused|encouraged|fulfilled|hopeful|peaceful|proud|relaxed|relieved|respected|terrific|tranquil|valued/i.test(text)) return "happy";
+
   // Sad keywords
-  if (/sad|upset|unfortunate|sorry|miss you/i.test(text)) return "sad";
-  
+  if (/sad|upset|unfortunate|sorry|miss you|disappointed|depressed|unhappy|heartbroken|down|regret|grief|lonely|gloomy|crying|tears|hurt|painful|melancholy|despair|hopeless|miserable|devastated|blue|despondent|disheartened|forlorn|sorrowful|dejected|downcast|wistful|brokenhearted|crushed|distressed|woeful|anguished|desolate|somber|ashamed|burdened|drained|empty|exhausted|helpless|humbled|inadequate|isolated|mournful|neglected|rejected|worthless|wounded/i.test(text)) return "sad";
+
   // Angry keywords
-  if (/angry|mad|frustrated|annoyed/i.test(text)) return "angry";
-  
+  if (/angry|mad|frustrated|annoyed|furious|irritated|outraged|hate|rage|fed up|upset|pissed|infuriated|livid|hostile|disgusted|resent|irate|fuming|enraged|seething|bitter|incensed|indignant|offended|agitated|exasperated|resentful|provoked|vexed|irked|aggravated|displeased|contempt|loathing|scorn|wrath|betrayed|humiliated|peeved|spiteful|vengeful|vindictive/i.test(text)) return "angry";
+
   // Excited keywords
-  if (/excited|thrilled|awesome|amazing/i.test(text)) return "excited";
-  
+  if (/excited|thrilled|awesome|amazing|pumped|stoked|ecstatic|enthusiastic|eager|hyped|can't wait|looking forward|incredible|unbelievable|wow|fantastic|brilliant|exhilarated|energized|animated|vibrant|passionate|zealous|fervent|ardent|elated|euphoric|overjoyed|jubilant|exuberant|enthralled|delighted|psyched|buzzed|fired up|amped|perky|frisky|giddy|giggly|zestful/i.test(text)) return "excited";
+
   // Surprised keywords
-  if (/surprised|wow|omg|unexpected|cannot believe/i.test(text)) return "surprised";
-  
+  if (/surprised|wow|omg|unexpected|cannot believe|shocked|astonished|stunned|startled|amazed|speechless|whoa|what|really|seriously|unbelievable|no way|astounded|dumbfounded|flabbergasted|thunderstruck|awestruck|taken aback|bewildered|dazed|floored|staggered|baffled|perplexed|blindsided|gobsmacked|mind blown|jaw dropped|jolted|alarmed/i.test(text)) return "surprised";
+
   return null;
 };
 
@@ -49,7 +49,7 @@ const MessageInput = () => {
       setPreviewEmotion(null);
       return;
     }
-    
+
     const emotion = getPreviewEmotion(text);
     setPreviewEmotion(emotion);
   }, [text, emotionDetectionEnabled]);
